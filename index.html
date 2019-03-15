@@ -12,30 +12,33 @@
 		<form name="submit-to-google-sheet">
 			Rating
 			<br>
-			<select name="rating" id="rating">
+			<select onchange="checkStarChange()" name="rating" id="rating">
 			  <option value="1">1</option>
 			  <option value="2">2</option>
 			  <option value="3">3</option>
 			  <option value="4">4</option>
-			  <option value="5">5</option>
+			  <option value="5" selected>5</option>
 			</select>
 			<br>
-			What went wrong?
-			<br>
-			<select name="reason" id="reason"  size="6" multiple>
-			  <option value="1">Poor route</option>
-			  <option value="2">Too many pickups</option>
-			  <option value="3">Co-rider behavior</option>
-			  <option value="4">Navigation</option>
-			  <option value="5">Driving</option>
-			  <option value="6" selected>Other</option>
-			</select>
+			<div id="extraOptions" hidden>
+				What went wrong?
+				<br>
+				<select name="reason" id="reason"  size="6" multiple>
+				  <option value="1">Poor route</option>
+				  <option value="2">Too many pickups</option>
+				  <option value="3">Co-rider behavior</option>
+				  <option value="4">Navigation</option>
+				  <option value="5">Driving</option>
+				  <option value="6" selected>Other</option>
+				</select>
+			</div>
 			<br>
 			Review
 			<br>
-			<textarea name='review1'></textarea>
+			<textarea onkeyup="checkLength()" id='review1' name='review1'></textarea>
+			<div id="textLength">0 characters</div>
 			<br>
-			<button>Save</button>
+			<button id="submitButton" type="submit" disabled>Submit</button>
 		</form>
 		<script type="text/javascript">
 			$(function() {
@@ -45,6 +48,26 @@
 			});
 		</script>
 		<script>
+
+		  function checkStarChange() {
+		  	var starValue = parseInt($('#rating').val());
+		  	if (starValue < 5) {
+		  		$('#extraOptions').show();
+		  	} else {
+		  		$('#extraOptions').hide();
+		  	}
+		  }
+
+		  function checkLength() {
+		  	var reviewLength = $('#review1').val().length;
+		  	$('#textLength').text(reviewLength + ' characters');
+		  	if (reviewLength >= 200) {
+		  		$('#submitButton').prop('disabled', false);
+		  	} else {
+		  		$('#submitButton').prop('disabled', true);
+		  	}
+		  }
+
 		  const scriptURL = 'https://script.google.com/macros/s/AKfycbzpQ5RgUo8YkP80fnn1zGu6FAGI-sAUz9hKP6Mb6KT3sFemDLKS/exec'
 		  const form = document.forms['submit-to-google-sheet']
 
@@ -54,6 +77,7 @@
 		      .then(response => console.log('Success!', response))
 		      .catch(error => console.error('Error!', error.message))
 		  })
+
 		</script>
 	</body>
 </html>
